@@ -4,7 +4,7 @@ import sharp from 'sharp';
 import { mkdir, readdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const root = path.resolve(import.meta.dirname, '..');
 const src = path.join(root, 'assets-src', 'photography');
 const out = path.join(root, 'public', 'images');
 const WIDTHS = [480, 800, 1200, 1536];

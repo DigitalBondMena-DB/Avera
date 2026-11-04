@@ -1,11 +1,13 @@
 {
   "name": "avera-web",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "images": "node scripts/build-images.mjs",
     "start": "ng serve",
     "prebuild": "node scripts/build-images.mjs",
     "build": "ng build",
+    "vercel-build": "npm run build",
     "build:dev": "ng build --configuration development",
     "serve:ssr": "node dist/avera-web/server/server.mjs",
     "typecheck": "tsc -p tsconfig.app.json --noEmit",

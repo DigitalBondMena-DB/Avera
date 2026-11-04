@@ -13,11 +13,20 @@ import { ROUTES_LIST } from './app/core/constants/routes';
  */
 const browserDistFolder = join(import.meta.dirname, '../browser');
 const SITE_ENV = process.env['SITE_ENV'] === 'production' ? 'production' : 'staging';
-const allowedHosts = (process.env['NG_ALLOWED_HOSTS'] ?? 'localhost').split(',').map(h => h.trim()).filter(Boolean);
+const defaultAllowedHosts = 'localhost,*.vercel.app,averaelite.com,www.averaelite.com';
+const allowedHosts = (process.env['NG_ALLOWED_HOSTS'] ?? defaultAllowedHosts)
+  .split(',')
+  .map(h => h.trim())
+  .filter(Boolean);
+const trustProxyHeaders = (process.env['NG_TRUST_PROXY_HEADERS'] ?? 'x-forwarded-for,x-forwarded-proto,x-forwarded-host')
+  .split(',')
+  .map(h => h.trim())
+  .filter(Boolean);
 
 const app = express();
+app.set('trust proxy', true);
 app.disable('x-powered-by');
-const angularApp = new AngularNodeAppEngine({ allowedHosts });
+const angularApp = new AngularNodeAppEngine({ allowedHosts, trustProxyHeaders });
 
 app.use((_req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -69,12 +78,13 @@ app.use((req, res, next) => {
     .catch(next);
 });
 
-if (isMainModule(import.meta.url) || process.env['pm_id']) {
-  const port = process.env['PORT'] || 4000;
-  app.listen(port, error => {
-    if (error) throw error;
-    console.log(`AVERA SSR listening on http://localhost:${port} (${SITE_ENV})`);
-  });
-}
+  if (!process.env['VERCEL'] && (isMainModule(import.meta.url) || process.env['pm_id'])) {
+    const port = process.env['PORT'] || 4000;
+    app.listen(port, error => {
+      if (error) throw error;
+      console.log(`AVERA SSR listening on http://localhost:${port} (${SITE_ENV})`);
+    });
+  }
 
-export const reqHandler = createNodeRequestHandler(app);
+  export const reqHandler = createNodeRequestHandler(app);
+  export default app;
