@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  siteUrl: 'http://localhost:4000',
+  siteUrl: 'https://avera-dusky.vercel.app',
   apiBaseUrl: 'https://avera.digitalbondmena.com/api/v1',
 };

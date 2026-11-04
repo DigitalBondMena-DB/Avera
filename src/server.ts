@@ -13,7 +13,7 @@ import { ROUTES_LIST } from './app/core/constants/routes';
  */
 const browserDistFolder = join(import.meta.dirname, '../browser');
 const SITE_ENV = process.env['SITE_ENV'] === 'production' ? 'production' : 'staging';
-const defaultAllowedHosts = 'localhost,*.vercel.app,averaelite.com,www.averaelite.com';
+const defaultAllowedHosts = 'localhost,*.vercel.app,avera-dusky.vercel.app';
 const allowedHosts = (process.env['NG_ALLOWED_HOSTS'] ?? defaultAllowedHosts)
   .split(',')
   .map(h => h.trim())
@@ -78,13 +78,13 @@ app.use((req, res, next) => {
     .catch(next);
 });
 
-  if (!process.env['VERCEL'] && (isMainModule(import.meta.url) || process.env['pm_id'])) {
-    const port = process.env['PORT'] || 4000;
-    app.listen(port, error => {
-      if (error) throw error;
-      console.log(`AVERA SSR listening on http://localhost:${port} (${SITE_ENV})`);
-    });
-  }
+if (!process.env['VERCEL'] && (isMainModule(import.meta.url) || process.env['pm_id'])) {
+  const port = process.env['PORT'] || 4000;
+  app.listen(port, error => {
+    if (error) throw error;
+    console.log(`AVERA SSR listening on http://localhost:${port} (${SITE_ENV})`);
+  });
+}
 
-  export const reqHandler = createNodeRequestHandler(app);
-  export default app;
+export const reqHandler = createNodeRequestHandler(app);
+export default app;
