@@ -1,0 +1,60 @@
+@let d = ctx.d();
+@let mk = m();
+<app-breadcrumbs [trail]="trail()" />
+<section class="page-hero page-hero--navy page-hero--market">
+  <div class="container page-hero__inner">
+    <p class="eyebrow">{{ mk.eyebrow }}</p>
+    <h1 class="page-hero__title">{{ mk.h1 }}</h1>
+    <p class="page-hero__lead">{{ mk.intro }}</p>
+    <div class="page-hero__actions">
+      <app-proposal-button [label]="d.common.getProposal" variant="light" [country]="mk.countryValue" />
+      <app-consultation-button [label]="d.common.bookConsultation" variant="outline-light" />
+    </div>
+    <dl class="market-facts">
+      @for (f of mk.facts; track f.title) { <div><dt>{{ f.title }}</dt><dd>{{ f.text }}</dd></div> }
+    </dl>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="scope">
+  <div class="container split split--4-8">
+    <div class="split__intro"><h2 class="h2" id="scope">{{ mk.scopeTitle }}</h2></div>
+    <ul class="checklist checklist--2">@for (x of mk.scope; track x) { <li><app-icon name="check" />{{ x }}</li> }</ul>
+  </div>
+</section>
+
+@if (mk.reasons; as reasons) {
+  <section class="section section--ivory" aria-labelledby="reasons">
+    <div class="container split split--4-8">
+      <div class="split__intro"><h2 class="h2" id="reasons">{{ mk.reasonsTitle }}</h2></div>
+      <app-ruled-list [items]="reasons" [numbered]="true" [columns]="1" />
+    </div>
+  </section>
+}
+@if (mk.path; as path) {
+  <section class="section section--ivory" aria-labelledby="path">
+    <div class="container split split--4-8">
+      <div class="split__intro"><h2 class="h2" id="path">{{ path.title }}</h2></div>
+      <app-steps [steps]="path.steps" />
+    </div>
+  </section>
+}
+
+<section class="section section--tight" aria-labelledby="contact">
+  <div class="container split split--4-8">
+    <div class="split__intro"><h2 class="h3" id="contact">{{ mk.contactTitle }}</h2><p class="muted">{{ mk.contactText }}</p></div>
+    <app-contact-lines [phoneIds]="mk.phoneIds" />
+  </div>
+</section>
+
+<section class="section section--tight section--rule">
+  <div class="container">
+    <p class="market-links__group">{{ d.marketUi.otherMarkets }}</p>
+    <ul class="inline-links">
+      @for (s of others(); track s) { <li><a [routerLink]="ctx.L('/markets/' + s)">{{ d.markets[s].linkLabel }}</a></li> }
+      <li><a [routerLink]="ctx.L('/markets/why-egypt')">{{ d.nav.whyEgypt }}</a></li>
+    </ul>
+  </div>
+</section>
+
+<app-cta-band [title]="mk.cta.title" [text]="mk.cta.text" [country]="mk.countryValue" />

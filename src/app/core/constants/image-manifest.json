@@ -1,0 +1,62 @@
+{
+  "architecture-hero": {
+    "width": 1672,
+    "height": 941,
+    "widths": [
+      480,
+      800,
+      1200,
+      1536
+    ]
+  },
+  "leadership-meeting-hero": {
+    "width": 1672,
+    "height": 941,
+    "widths": [
+      480,
+      800,
+      1200,
+      1536
+    ]
+  },
+  "payroll-advisory": {
+    "width": 1536,
+    "height": 1024,
+    "widths": [
+      480,
+      800,
+      1200,
+      1536
+    ]
+  },
+  "recruitment-consultation": {
+    "width": 1536,
+    "height": 1024,
+    "widths": [
+      480,
+      800,
+      1200,
+      1536
+    ]
+  },
+  "team-collaboration": {
+    "width": 1536,
+    "height": 1024,
+    "widths": [
+      480,
+      800,
+      1200,
+      1536
+    ]
+  },
+  "workspace-editorial": {
+    "width": 1536,
+    "height": 1024,
+    "widths": [
+      480,
+      800,
+      1200,
+      1536
+    ]
+  }
+}

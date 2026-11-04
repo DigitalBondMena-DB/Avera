@@ -1,0 +1,47 @@
+@let d = ctx.d();
+@let a = d.about;
+<app-breadcrumbs [trail]="trail()" />
+<section class="media-hero">
+  <div class="container media-hero__inner">
+    <div class="media-hero__text">
+      <p class="eyebrow">{{ a.eyebrow }}</p>
+      <h1 class="page-hero__title">{{ a.h1 }}</h1>
+      <p class="page-hero__lead">{{ a.intro }}</p>
+      <div class="page-hero__actions"><app-consultation-button [label]="a.talk" variant="primary" /></div>
+    </div>
+    <div class="media-hero__media">
+      <app-photo name="team-collaboration" [alt]="a.imageAlt" [priority]="true" sizes="(min-width: 1000px) 50vw, 100vw" position="45% 40%" />
+    </div>
+  </div>
+</section>
+<section class="section" aria-labelledby="story">
+  <div class="container split split--4-8">
+    <div class="split__intro"><h2 class="h2" id="story">{{ a.storyTitle }}</h2></div>
+    <p class="lede">{{ a.story }}</p>
+  </div>
+</section>
+<section class="section section--navy" [attr.aria-label]="a.visionTitle + ' · ' + a.missionTitle">
+  <div class="container vm">
+    <div class="vm__col"><span class="diamond-rule" aria-hidden="true"></span><h2 class="vm__title">{{ a.visionTitle }}</h2><p class="vm__text">{{ a.vision }}</p></div>
+    <div class="vm__col"><span class="diamond-rule" aria-hidden="true"></span><h2 class="vm__title">{{ a.missionTitle }}</h2><p class="vm__text">{{ a.mission }}</p></div>
+  </div>
+</section>
+<section class="section" aria-labelledby="values">
+  <div class="container split split--4-8">
+    <div class="split__intro"><h2 class="h2" id="values">{{ a.valuesTitle }}</h2></div>
+    <app-ruled-list [items]="a.values" [columns]="1" />
+  </div>
+</section>
+<section class="section section--ivory" aria-labelledby="why">
+  <div class="container split split--4-8">
+    <div class="split__intro"><h2 class="h2" id="why">{{ a.whyTitle }}</h2></div>
+    <app-ruled-list [items]="a.why" [numbered]="true" [columns]="2" />
+  </div>
+</section>
+<section class="section section--tight" aria-labelledby="more">
+  <div class="container">
+    <h2 class="eyebrow" id="more">{{ a.linksTitle }}</h2>
+    <ul class="inline-links inline-links--arrows">@for (x of links(); track x.p) { <li><app-arrow-link [to]="ctx.L(x.p)">{{ x.l }}</app-arrow-link></li> }</ul>
+  </div>
+</section>
+<app-cta-band [title]="a.ctaTitle" [text]="a.ctaText" [consultationFirst]="true" />

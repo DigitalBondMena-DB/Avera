@@ -1,0 +1,79 @@
+@let d = ctx.d();
+@let sv = s();
+<app-breadcrumbs [trail]="trail()" />
+
+@if (sv.image; as img) {
+  <section class="media-hero">
+    <div class="container media-hero__inner">
+      <div class="media-hero__text">
+        <p class="eyebrow">{{ d.nav.groups[sv.group] }} · {{ sv.name }}</p>
+        <h1 class="page-hero__title">{{ sv.h1 }}</h1>
+        <p class="page-hero__lead">{{ sv.promise }}</p>
+        <div class="page-hero__actions">
+          <app-proposal-button [label]="d.common.getProposal" [service]="slug()" />
+          <app-consultation-button [label]="d.common.bookConsultation" />
+        </div>
+      </div>
+      <div class="media-hero__media">
+        <app-photo [name]="img.key" [alt]="img.alt" [priority]="true" sizes="(min-width: 1000px) 50vw, 100vw" [position]="img.position" />
+      </div>
+    </div>
+  </section>
+} @else {
+  <app-page-hero [eyebrow]="d.nav.groups[sv.group] + ' · ' + sv.name" [title]="sv.h1" [lead]="sv.promise">
+    <app-proposal-button [label]="d.common.getProposal" [service]="slug()" />
+    <app-consultation-button [label]="d.common.bookConsultation" />
+  </app-page-hero>
+}
+
+<section class="section" aria-labelledby="included">
+  <div class="container split split--4-8">
+    <div class="split__intro"><p class="eyebrow">{{ ui().included }}</p><h2 class="h2" id="included">{{ sv.includedTitle }}</h2></div>
+    <app-ruled-list [items]="sv.included" [columns]="includedCols()" />
+  </div>
+</section>
+
+@if (sv.deliverables; as list) {
+  <section class="section section--ivory section--tight" aria-labelledby="deliverables">
+    <div class="container split split--4-8">
+      <div class="split__intro"><p class="eyebrow">{{ ui().deliverables }}</p><h2 class="h3" id="deliverables">{{ sv.deliverablesTitle }}</h2></div>
+      <ul class="checklist">@for (x of list; track x) { <li><app-icon name="check" />{{ x }}</li> }</ul>
+    </div>
+  </section>
+}
+
+@if (sv.comparison; as cmp) {
+  <section class="section" aria-labelledby="comparison">
+    <div class="container">
+      <div class="section-head"><h2 class="h2" id="comparison">{{ cmp.title }}</h2><p class="section-head__text">{{ cmp.intro }}</p></div>
+      <div class="table-wrap">
+        <table class="compare">
+          <thead><tr>@for (c of cmp.columns; track $index) { <th scope="col">{{ c }}</th> }</tr></thead>
+          <tbody>@for (r of cmp.rows; track r[0]) { <tr><th scope="row">{{ r[0] }}</th><td>{{ r[1] }}</td><td>{{ r[2] }}</td></tr> }</tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+}
+
+<section class="section" [class.section--ivory]="!!sv.comparison" aria-labelledby="process">
+  <div class="container split split--4-8">
+    <div class="split__intro">
+      <h2 class="h2" id="process">{{ sv.process ? sv.process.title : ui().startTitle }}</h2>
+      <app-arrow-link [to]="ctx.L('/how-it-works')">{{ ui().startLink }}</app-arrow-link>
+    </div>
+    <app-steps [steps]="sv.process ? sv.process.steps : ui().startSteps" [compact]="!sv.process" />
+  </div>
+</section>
+
+@if (hasFaq()) {
+  <section class="section section--tight" aria-labelledby="faq">
+    <div class="container split split--4-8">
+      <div class="split__intro"><h2 class="h2" id="faq">{{ d.common.faqTitle }}</h2></div>
+      <app-faq-list [items]="sv.faq" schemaId="faq" />
+    </div>
+  </section>
+}
+
+<app-related-services [slugs]="sv.related" />
+<app-cta-band [title]="sv.cta.title" [text]="sv.cta.text" [service]="slug()" />

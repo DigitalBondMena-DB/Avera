@@ -1,0 +1,50 @@
+@let d = ctx.d();
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <img src="/brand/avera-logo-white.png" width="1139" height="539" [alt]="d.siteName" class="site-footer__logo" loading="lazy" />
+        <p>{{ d.footer.line }}</p>
+      </div>
+      <nav [attr.aria-label]="d.footer.servicesTitle">
+        <p class="site-footer__title">{{ d.footer.servicesTitle }}</p>
+        <ul>@for (s of services; track s) { <li><a [routerLink]="ctx.L('/services/' + s)">{{ d.services[s].name }}</a></li> }</ul>
+      </nav>
+      <nav [attr.aria-label]="d.footer.companyTitle">
+        <p class="site-footer__title">{{ d.footer.companyTitle }}</p>
+        <ul>@for (c of company(); track c.p) { <li><a [routerLink]="ctx.L(c.p)">{{ c.l }}</a></li> }</ul>
+        <p class="site-footer__title site-footer__title--spaced">{{ d.nav.markets }}</p>
+        <ul>
+          <li><a [routerLink]="ctx.L('/markets')">{{ d.nav.markets }}</a></li>
+          <li><a [routerLink]="ctx.L('/markets/why-egypt')">{{ d.nav.whyEgypt }}</a></li>
+          <li><a [routerLink]="ctx.L('/industries')">{{ d.nav.industries }}</a></li>
+          <li><a [routerLink]="ctx.L('/pricing')">{{ d.nav.pricing }}</a></li>
+        </ul>
+      </nav>
+      <div>
+        <p class="site-footer__title">{{ d.footer.contactTitle }}</p>
+        <ul class="site-footer__contact">
+          <li>{{ address() }}</li>
+          @for (p of biz().phones; track p.id) {
+            <li><span class="site-footer__muted">{{ p.region === 'SA' ? d.common.ksa : d.common.egypt }} </span><a [href]="tel(p.display)"><bdi dir="ltr">{{ p.display }}</bdi></a></li>
+          }
+          <li><a [href]="'mailto:' + biz().email"><bdi dir="ltr">{{ biz().email }}</bdi></a></li>
+          @if (biz().linkedinUrl; as li) { <li><a [href]="li" rel="noopener" target="_blank">LinkedIn</a></li> }
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <p>© {{ year }} {{ d.footer.rights }}
+        @if (biz().registration.commercialRegister; as cr) { · {{ d.trust.factsCr }} <bdi dir="ltr">{{ cr }}</bdi> }
+      </p>
+      <ul class="site-footer__legal">
+        <li><a [routerLink]="ctx.L('/privacy')">{{ d.footer.privacy }}</a></li>
+        <li><a [routerLink]="ctx.L('/terms')">{{ d.footer.terms }}</a></li>
+        <li><a [routerLink]="ctx.L('/cookies')">{{ d.footer.cookies }}</a></li>
+        <li><a [routerLink]="ctx.L('/sitemap')">{{ d.footer.sitemap }}</a></li>
+        @if (trackers()) { <li><button type="button" class="footer__btnlink" (click)="analytics.bannerOpen.set(true)">{{ d.footer.cookieSettings }}</button></li> }
+      </ul>
+    </div>
+    <p class="site-footer__note">{{ d.footer.illustrativeNote }}</p>
+  </div>
+</footer>

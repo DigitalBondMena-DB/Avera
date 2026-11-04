@@ -1,0 +1,119 @@
+@let F = f();
+<form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <app-mode-banner />
+  <ol class="steps" [attr.aria-label]="ctx.d().forms.stepLabel.replace('{n}', '' + (step() + 1)).replace('{total}', '3')">
+    @for (name of F.stepNames; track name; let i = $index) {
+      <li [class.is-current]="i === step()" [class.is-done]="i < step()" [attr.aria-current]="i === step() ? 'step' : null">
+        <span class="steps__n">{{ i + 1 }}</span><span class="steps__name">{{ name }}</span>
+      </li>
+    }
+  </ol>
+  <p class="form__step-title" tabindex="-1"><span class="sr-only">{{ F.stepLabel.replace('{n}', '' + (step() + 1)).replace('{total}', '3') }}: </span>{{ F.stepNames[step()] }}</p>
+  @if (hasErrors()) { <p class="form__summary" role="alert">{{ F.errorSummary }}</p> }
+
+  @switch (step()) {
+    @case (0) {
+      <div class="form__fields" formGroupName="team">
+        <fieldset class="field choice" [class.field--error]="err('team.employees')" [attr.aria-invalid]="err('team.employees') ? true : null"
+          [attr.aria-describedby]="err('team.employees') ? id('employees') + '-err' : null" [id]="id('employees')" tabindex="-1">
+          <legend class="field__label">{{ F.fields.employees }}</legend>
+          <div class="choice__grid choice__grid--4">
+            @for (o of F.employeesOptions; track o.value) {
+              <label class="choice__item" [class.is-on]="ctrl('team.employees').value === o.value">
+                <input type="radio" formControlName="employees" [value]="o.value" /><span dir="ltr">{{ o.label }}</span>
+              </label>
+            }
+          </div>
+          @if (err('team.employees'); as e) { <p class="field__error" [id]="id('employees') + '-err'">{{ e }}</p> }
+        </fieldset>
+        <div class="field" [class.field--error]="err('team.roles')">
+          <label class="field__label" [for]="id('roles')">{{ F.fields.roles }}</label>
+          <input [id]="id('roles')" formControlName="roles" type="text" [attr.aria-invalid]="err('team.roles') ? true : null"
+            [attr.aria-describedby]="id('roles') + '-hint' + (err('team.roles') ? ' ' + id('roles') + '-err' : '')" />
+          <p class="field__hint" [id]="id('roles') + '-hint'">{{ F.fields.rolesHint }}</p>
+          @if (err('team.roles'); as e) { <p class="field__error" [id]="id('roles') + '-err'">{{ e }}</p> }
+        </div>
+        <div class="field" [class.field--error]="err('team.start')">
+          <label class="field__label" [for]="id('start')">{{ F.fields.start }}</label>
+          <div class="select">
+            <select [id]="id('start')" formControlName="start" [attr.aria-invalid]="err('team.start') ? true : null" [attr.aria-describedby]="err('team.start') ? id('start') + '-err' : null">
+              <option value="">—</option>
+              @for (o of F.startOptions; track o.value) { <option [value]="o.value">{{ o.label }}</option> }
+            </select>
+          </div>
+          @if (err('team.start'); as e) { <p class="field__error" [id]="id('start') + '-err'">{{ e }}</p> }
+        </div>
+      </div>
+    }
+    @case (1) {
+      <div class="form__fields" formGroupName="services">
+        <fieldset class="field choice" [class.field--error]="err('services.services')" [attr.aria-invalid]="err('services.services') ? true : null"
+          [attr.aria-describedby]="id('services') + '-hint' + (err('services.services') ? ' ' + id('services') + '-err' : '')" [id]="id('services')" tabindex="-1">
+          <legend class="field__label">{{ F.fields.services }}</legend>
+          <p class="field__hint" [id]="id('services') + '-hint'">{{ F.fields.servicesHint }}</p>
+          <div class="choice__grid choice__grid--2">
+            @for (o of F.serviceOptions; track o.value) {
+              <label class="choice__item" [class.is-on]="isOn(o.value)">
+                <input type="checkbox" [checked]="isOn(o.value)" (change)="toggleService(o.value)" /><span>{{ o.label }}</span>
+              </label>
+            }
+          </div>
+          @if (err('services.services'); as e) { <p class="field__error" [id]="id('services') + '-err'">{{ e }}</p> }
+        </fieldset>
+        <div class="field" [class.field--error]="err('services.message')">
+          <label class="field__label" [for]="id('message')">{{ F.fields.message }} <span class="field__opt">({{ F.optional }})</span></label>
+          <textarea [id]="id('message')" rows="3" formControlName="message" [attr.aria-invalid]="err('services.message') ? true : null"></textarea>
+          @if (err('services.message'); as e) { <p class="field__error">{{ e }}</p> }
+        </div>
+      </div>
+    }
+    @case (2) {
+      <div class="form__fields" formGroupName="contact">
+        <div class="field" [class.field--error]="err('contact.name')">
+          <label class="field__label" [for]="id('name')">{{ F.fields.name }}</label>
+          <input [id]="id('name')" formControlName="name" autocomplete="name" [attr.aria-invalid]="err('contact.name') ? true : null" [attr.aria-describedby]="err('contact.name') ? id('name') + '-err' : null" />
+          @if (err('contact.name'); as e) { <p class="field__error" [id]="id('name') + '-err'">{{ e }}</p> }
+        </div>
+        <div class="field" [class.field--error]="err('contact.email')">
+          <label class="field__label" [for]="id('email')">{{ F.fields.email }}</label>
+          <input [id]="id('email')" formControlName="email" type="email" autocomplete="email" dir="ltr" inputmode="email" (blur)="checkEmail()" (input)="freeHint.set(false)"
+            [attr.aria-invalid]="err('contact.email') ? true : null" [attr.aria-describedby]="(freeHint() ? id('email') + '-hint ' : '') + (err('contact.email') ? id('email') + '-err' : '')" />
+          @if (freeHint()) { <p class="field__hint" [id]="id('email') + '-hint'">{{ F.freeEmailHint }}</p> }
+          @if (err('contact.email'); as e) { <p class="field__error" [id]="id('email') + '-err'">{{ e }}</p> }
+        </div>
+        <div class="field" [class.field--error]="err('contact.company')">
+          <label class="field__label" [for]="id('company')">{{ F.fields.company }}</label>
+          <input [id]="id('company')" formControlName="company" autocomplete="organization" [attr.aria-invalid]="err('contact.company') ? true : null" [attr.aria-describedby]="err('contact.company') ? id('company') + '-err' : null" />
+          @if (err('contact.company'); as e) { <p class="field__error" [id]="id('company') + '-err'">{{ e }}</p> }
+        </div>
+        <div class="field" [class.field--error]="err('contact.country')">
+          <label class="field__label" [for]="id('country')">{{ F.fields.country }}</label>
+          <div class="select">
+            <select [id]="id('country')" formControlName="country" autocomplete="country" [attr.aria-invalid]="err('contact.country') ? true : null" [attr.aria-describedby]="err('contact.country') ? id('country') + '-err' : null">
+              <option value="">{{ F.fields.countryPlaceholder }}</option>
+              @for (o of F.countries; track o.value) { <option [value]="o.value">{{ o.label }}</option> }
+            </select>
+          </div>
+          @if (err('contact.country'); as e) { <p class="field__error" [id]="id('country') + '-err'">{{ e }}</p> }
+        </div>
+        <div class="field" [class.field--error]="err('contact.phone')">
+          <label class="field__label" [for]="id('phone')">{{ F.fields.phone }} <span class="field__opt">({{ F.optional }})</span></label>
+          <input [id]="id('phone')" formControlName="phone" type="tel" autocomplete="tel" dir="ltr" inputmode="tel" [attr.aria-invalid]="err('contact.phone') ? true : null" [attr.aria-describedby]="id('phone') + '-hint'" />
+          <p class="field__hint" [id]="id('phone') + '-hint'">{{ F.fields.phoneHint }}</p>
+          @if (err('contact.phone'); as e) { <p class="field__error">{{ e }}</p> }
+        </div>
+        <div class="hp" aria-hidden="true"><label>Website<input tabindex="-1" autocomplete="off" name="website" [value]="website()" (input)="onWebsite($event)" /></label></div>
+        <app-privacy-line />
+      </div>
+    }
+  }
+
+  <app-form-outcome [outcome]="outcome()" />
+
+  <div class="form__actions">
+    @if (step() > 0) { <button type="button" class="btn btn--ghost" (click)="back()">{{ F.back }}</button> }
+    <button type="submit" class="btn btn--primary" [disabled]="busy()" [attr.aria-busy]="busy() || null">
+      {{ step() < 2 ? F.next : busy() ? F.submitting : outcome() && outcome() !== 'preview' ? F.retry : F.submit }}
+    </button>
+  </div>
+</form>

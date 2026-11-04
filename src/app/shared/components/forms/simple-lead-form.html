@@ -1,0 +1,57 @@
+@let F = f();
+<form class="form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <app-mode-banner />
+  @if (attempted() && form.invalid) { <p class="form__summary" role="alert">{{ F.errorSummary }}</p> }
+  <div class="form__fields">
+    @for (k of ['name', 'email', 'company']; track k) {
+      <div class="field" [class.field--error]="err(k)">
+        <label class="field__label" [for]="id(k)">{{ k === 'name' ? F.fields.name : k === 'email' ? F.fields.email : F.fields.company }}</label>
+        <input [id]="id(k)" [formControlName]="k" [type]="k === 'email' ? 'email' : 'text'" [attr.dir]="k === 'email' ? 'ltr' : null"
+          [attr.autocomplete]="k === 'name' ? 'name' : k === 'email' ? 'email' : 'organization'"
+          [attr.aria-invalid]="err(k) ? true : null" [attr.aria-describedby]="err(k) ? id(k) + '-err' : null" />
+        @if (err(k); as e) { <p class="field__error" [id]="id(k) + '-err'">{{ e }}</p> }
+      </div>
+    }
+    <div class="field" [class.field--error]="err('country')">
+      <label class="field__label" [for]="id('country')">{{ F.fields.country }}@if (kind() === 'documents') { <span class="field__opt"> ({{ F.optional }})</span> }</label>
+      <div class="select">
+        <select [id]="id('country')" formControlName="country" [attr.aria-invalid]="err('country') ? true : null" [attr.aria-describedby]="err('country') ? id('country') + '-err' : null">
+          <option value="">{{ F.fields.countryPlaceholder }}</option>
+          @for (o of F.countries; track o.value) { <option [value]="o.value">{{ o.label }}</option> }
+        </select>
+      </div>
+      @if (err('country'); as e) { <p class="field__error" [id]="id('country') + '-err'">{{ e }}</p> }
+    </div>
+    @if (kind() === 'consultation') {
+      <div class="field" [class.field--error]="err('phone')">
+        <label class="field__label" [for]="id('phone')">{{ F.fields.phone }} <span class="field__opt">({{ F.optional }})</span></label>
+        <input [id]="id('phone')" formControlName="phone" type="tel" dir="ltr" autocomplete="tel" [attr.aria-describedby]="id('phone') + '-hint'" [attr.aria-invalid]="err('phone') ? true : null" />
+        <p class="field__hint" [id]="id('phone') + '-hint'">{{ F.fields.phoneHint }}</p>
+        @if (err('phone'); as e) { <p class="field__error">{{ e }}</p> }
+      </div>
+      <div class="field">
+        <label class="field__label" [for]="id('availability')">{{ F.fields.availability }} <span class="field__opt">({{ F.optional }})</span></label>
+        <input [id]="id('availability')" formControlName="availability" [attr.aria-describedby]="id('availability') + '-hint'" />
+        <p class="field__hint" [id]="id('availability') + '-hint'">{{ F.fields.availabilityHint }}</p>
+      </div>
+      <div class="field">
+        <label class="field__label" [for]="id('topic')">{{ F.fields.topic }} <span class="field__opt">({{ F.optional }})</span></label>
+        <textarea [id]="id('topic')" rows="3" formControlName="topic"></textarea>
+      </div>
+    } @else {
+      <div class="field" [class.field--error]="err('documents')">
+        <label class="field__label" [for]="id('documents')">{{ F.fields.documents }}</label>
+        <textarea [id]="id('documents')" rows="3" formControlName="documents" [attr.aria-invalid]="err('documents') ? true : null"
+          [attr.aria-describedby]="id('documents') + '-hint' + (err('documents') ? ' ' + id('documents') + '-err' : '')"></textarea>
+        <p class="field__hint" [id]="id('documents') + '-hint'">{{ F.fields.documentsHint }}</p>
+        @if (err('documents'); as e) { <p class="field__error" [id]="id('documents') + '-err'">{{ e }}</p> }
+      </div>
+    }
+    <div class="hp" aria-hidden="true"><label>Website<input tabindex="-1" autocomplete="off" name="website" [value]="website()" (input)="onWebsite($event)" /></label></div>
+    <app-privacy-line />
+  </div>
+  <app-form-outcome [outcome]="outcome()" />
+  <div class="form__actions">
+    <button type="submit" class="btn btn--primary" [disabled]="busy()" [attr.aria-busy]="busy() || null">{{ busy() ? F.submitting : F.submit }}</button>
+  </div>
+</form>

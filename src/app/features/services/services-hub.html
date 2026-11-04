@@ -1,0 +1,34 @@
+@let d = ctx.d();
+<app-breadcrumbs [trail]="trail()" />
+<app-page-hero [eyebrow]="d.nav.services" [title]="d.servicesHub.h1" [lead]="d.servicesHub.intro" />
+<section class="section">
+  <div class="container">
+    @for (g of groups; track g; let gi = $index) {
+      <div class="group-block">
+        <div class="group-block__head">
+          <span class="group-block__n">{{ pad(gi + 1) }}</span>
+          <h2 class="h3">{{ d.nav.groups[g] }}</h2>
+          <p class="muted">{{ d.servicesHub.groupIntro[g] }}</p>
+        </div>
+        <ul class="service-rows service-rows--wide">
+          @for (s of all(); track s.slug) {
+            @if (s.group === g) {
+              <li><a class="service-row" [routerLink]="ctx.L('/services/' + s.slug)">
+                <span class="service-row__name">{{ s.name }}</span>
+                <span class="service-row__short">{{ s.promise }}</span>
+                <app-icon name="arrow" />
+              </a></li>
+            }
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</section>
+<section class="section section--ivory section--tight">
+  <div class="container strip">
+    <div><h2 class="h3">{{ d.common.notSure }}</h2><p class="muted">{{ d.common.notSureText }}</p></div>
+    <app-consultation-button [label]="d.common.bookConsultation" variant="primary" />
+  </div>
+</section>
+<app-cta-band [title]="d.home.finalTitle" [text]="d.home.finalText" />

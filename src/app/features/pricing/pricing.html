@@ -1,0 +1,46 @@
+@let d = ctx.d();
+@let p = d.pricing;
+<app-breadcrumbs [trail]="trail()" />
+<app-page-hero [eyebrow]="d.nav.pricing" [title]="p.h1" [lead]="p.intro">
+  <app-proposal-button [label]="d.common.getProposal" />
+</app-page-hero>
+
+<section class="section" aria-labelledby="model">
+  <div class="container split split--4-8">
+    <div class="split__intro"><h2 class="h2" id="model">{{ p.modelTitle }}</h2></div>
+    <app-ruled-list [items]="p.modelItems" [numbered]="true" [columns]="1" />
+  </div>
+</section>
+
+<section class="section section--ivory" aria-labelledby="levels">
+  <div class="container">
+    <div class="section-head"><h2 class="h2" id="levels">{{ p.packagesTitle }}</h2><p class="section-head__text">{{ p.packagesIntro }}</p></div>
+    <ol class="levels">
+      @for (pk of p.packages; track pk.name; let i = $index) {
+        <li class="level"><span class="level__n">{{ pad(i + 1) }}</span><h3 class="level__name">{{ pk.name }}</h3>
+          <p class="level__best"><span class="sr-only">{{ p.bestForLabel }}: </span>{{ pk.bestFor }}</p></li>
+      }
+    </ol>
+    <div class="core-note"><h3 class="h4">{{ p.coreTitle }}</h3><p>{{ p.coreText }}</p></div>
+    @if (showComparison()) {
+      <div class="comparison-block" [class.is-draft]="!confirmed()">
+        @if (!confirmed()) { <p class="draft-tag">{{ d.common.draftLabel }}</p> }
+        <h3 class="h4">{{ p.comparisonTitle }}</h3>
+        <div class="table-wrap">
+          <table class="compare">
+            <thead><tr><th scope="col"><span class="sr-only">{{ p.comparisonTitle }}</span></th>@for (pk of p.packages; track pk.name) { <th scope="col">{{ pk.name }}</th> }</tr></thead>
+            <tbody>@for (r of p.comparisonRows; track r.label) { <tr><th scope="row">{{ r.label }}</th>@for (v of r.values; track $index) { <td>{{ v }}</td> }</tr> }</tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="section" aria-labelledby="bundles">
+  <div class="container split split--4-8">
+    <div class="split__intro"><p class="eyebrow">{{ d.nav.services }}</p><h2 class="h2" id="bundles">{{ p.bundlesTitle }}</h2></div>
+    <app-ruled-list [items]="p.bundles" [columns]="2" />
+  </div>
+</section>
+<app-cta-band [title]="p.ctaTitle" [text]="p.ctaText" />

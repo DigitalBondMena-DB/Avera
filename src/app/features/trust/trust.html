@@ -1,0 +1,71 @@
+@let d = ctx.d();
+@let t = d.trust;
+<app-breadcrumbs [trail]="trail()" />
+<section class="media-hero">
+  <div class="container media-hero__inner">
+    <div class="media-hero__text">
+      <p class="eyebrow">{{ t.eyebrow }}</p>
+      <h1 class="page-hero__title">{{ t.h1 }}</h1>
+      <p class="page-hero__lead">{{ t.intro }}</p>
+    </div>
+    <div class="media-hero__media">
+      <app-photo name="payroll-advisory" [alt]="t.imageAlt" [priority]="true" sizes="(min-width: 1000px) 50vw, 100vw" position="55% 35%" />
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight" aria-labelledby="facts">
+  <div class="container">
+    <div class="facts-box facts-box--wide">
+      <div>
+        <h2 class="h4" id="facts">{{ t.factsTitle }}</h2>
+        <dl class="facts-box__list">
+          <div><dt>{{ t.factsCompany }}</dt><dd>{{ ctx.lang() === 'ar' ? biz().name.ar : biz().name.en }}</dd></div>
+          @for (f of facts(); track f.k) { <div><dt>{{ f.k }}</dt><dd><bdi dir="ltr">{{ f.v }}</bdi></dd></div> }
+          @if (address(); as a) { <div><dt>{{ d.common.office }}</dt><dd>{{ a }}</dd></div> }
+        </dl>
+        <p class="facts-box__text">{{ t.factsOnRequest }}</p>
+      </div>
+      <app-documents-button [label]="t.docsButton" variant="primary" />
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="commit">
+  <div class="container">
+    <div class="section-head"><h2 class="h2" id="commit">{{ t.commitmentsTitle }}</h2><p class="section-head__text">{{ t.commitmentsIntro }}</p></div>
+    <ol class="numbered-cols numbered-cols--3">
+      @for (c of commitments(); track c.title; let i = $index) {
+        <li><span class="numbered-cols__n">{{ pad(i + 1) }}</span><h3 class="numbered-cols__title">{{ c.title }}</h3><p class="numbered-cols__text">{{ c.text }}</p></li>
+      }
+    </ol>
+  </div>
+</section>
+
+<section class="section section--navy" id="questions" aria-labelledby="q-title">
+  <div class="container split split--4-8">
+    <div class="split__intro">
+      <span class="diamond-rule" aria-hidden="true"></span>
+      <h2 class="h2" id="q-title">{{ t.questionsTitle }}</h2>
+      <p class="on-navy-muted">{{ t.questionsIntro }}</p>
+    </div>
+    <ol class="questions">
+      @for (q of t.questions; track q.title; let i = $index) {
+        <li><span class="questions__n">{{ i + 1 }}</span><div><h3 class="questions__q">{{ q.title }}</h3><p class="questions__why">{{ q.text }}</p></div></li>
+      }
+    </ol>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="laws">
+  <div class="container split split--4-8">
+    <div class="split__intro"><h2 class="h2" id="laws">{{ t.lawsTitle }}</h2><p class="muted">{{ t.lawsIntro }}</p></div>
+    <div>
+      <div class="table-wrap">
+        <table class="compare compare--laws"><tbody>@for (l of t.laws; track l.title) { <tr><th scope="row">{{ l.title }}</th><td>{{ l.text }}</td></tr> }</tbody></table>
+      </div>
+      <p class="note">{{ t.disclaimer }}</p>
+    </div>
+  </div>
+</section>
+<app-cta-band [title]="d.home.finalTitle" [text]="d.home.finalText" />

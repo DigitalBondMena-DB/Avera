@@ -1,0 +1,35 @@
+@let d = ctx.d();
+@let c = d.careers;
+<app-breadcrumbs [trail]="trail()" />
+<section class="media-hero">
+  <div class="container media-hero__inner">
+    <div class="media-hero__text">
+      <p class="eyebrow">{{ d.nav.careers }}</p>
+      <h1 class="page-hero__title">{{ c.h1 }}</h1>
+      <p class="page-hero__lead">{{ c.intro }}</p>
+    </div>
+    <div class="media-hero__media">
+      <app-photo name="recruitment-consultation" [alt]="c.imageAlt" [priority]="true" sizes="(min-width: 1000px) 50vw, 100vw" position="50% 40%" />
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="tabs">
+      <div role="tablist" class="tabs__list" #list (keydown)="onKey($event, list)">
+        @for (t of c.tabs; track t; let i = $index) {
+          <button type="button" role="tab" class="tabs__tab" [id]="'ctab-' + i" [attr.aria-controls]="'cpanel-' + i"
+            [attr.aria-selected]="tab() === i" [tabindex]="tab() === i ? 0 : -1" (click)="tab.set(i)">{{ t }}</button>
+        }
+      </div>
+      <div role="tabpanel" class="tabs__panel" id="cpanel-0" aria-labelledby="ctab-0" [hidden]="tab() !== 0" tabindex="0"><p>{{ c.noOpenings }}</p></div>
+      <div role="tabpanel" class="tabs__panel" id="cpanel-1" aria-labelledby="ctab-1" [hidden]="tab() !== 1" tabindex="0"><p>{{ c.noOpenings }} {{ c.clientsNote }}</p></div>
+    </div>
+  </div>
+</section>
+<section class="section section--ivory section--tight">
+  <div class="container strip">
+    <div><h2 class="h3">{{ c.interestTitle }}</h2><p class="muted">{{ c.interestText }}</p></div>
+    <a class="btn btn--primary" [href]="'mailto:' + email()">{{ c.interestButton }}</a>
+  </div>
+</section>

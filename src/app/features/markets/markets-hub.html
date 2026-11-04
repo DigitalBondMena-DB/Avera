@@ -1,0 +1,60 @@
+@let d = ctx.d();
+@let m = d.marketsHub;
+<app-breadcrumbs [trail]="trail()" />
+<section class="media-hero">
+  <div class="container media-hero__inner">
+    <div class="media-hero__text">
+      <p class="eyebrow">{{ m.eyebrow }}</p>
+      <h1 class="page-hero__title">{{ m.h1 }}</h1>
+      <p class="page-hero__lead">{{ m.intro }}</p>
+      <div class="page-hero__actions">
+        <app-proposal-button [label]="d.common.getProposal" />
+        <app-consultation-button [label]="d.common.bookConsultation" />
+      </div>
+    </div>
+    <div class="media-hero__media">
+      <app-photo name="team-collaboration" [alt]="m.imageAlt" [priority]="true" sizes="(min-width: 1000px) 50vw, 100vw" position="45% 40%" />
+    </div>
+  </div>
+</section>
+
+<section class="section section--ivory" aria-labelledby="choose">
+  <div class="container">
+    <h2 class="h2" id="choose">{{ m.selectorTitle }}</h2>
+    <div class="market-grid">
+      <div>
+        <p class="market-links__group">{{ d.nav.gulfCompanies }}</p>
+        <ul class="market-tiles">
+          @for (s of gulf; track s) {
+            <li><a [routerLink]="ctx.L('/markets/' + s)" class="market-tile">
+              <span class="market-tile__name">{{ d.markets[s].name }}</span>
+              <span class="market-tile__h">{{ d.markets[s].h1 }}</span>
+              <app-icon name="arrow" />
+            </a></li>
+          }
+        </ul>
+      </div>
+      <div>
+        <p class="market-links__group">{{ d.nav.internationalCompanies }}</p>
+        <ul class="market-tiles">
+          <li><a [routerLink]="ctx.L('/markets/international')" class="market-tile market-tile--tall">
+            <span class="market-tile__name">{{ d.markets.international.name }}</span>
+            <span class="market-tile__h">{{ d.nav.internationalNote }}</span>
+            <span class="market-tile__h">{{ d.markets.international.h1 }}</span>
+            <app-icon name="arrow" />
+          </a></li>
+        </ul>
+        <p class="market-why">{{ m.whyEgyptText }} <app-arrow-link [to]="ctx.L('/markets/why-egypt')">{{ d.nav.whyEgypt }}</app-arrow-link></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="adv">
+  <div class="container split split--4-8">
+    <div class="split__intro"><h2 class="h2" id="adv">{{ m.advantagesTitle }}</h2></div>
+    <app-ruled-list [items]="m.advantages" [numbered]="true" [columns]="1" />
+  </div>
+</section>
+
+<app-cta-band [title]="m.ctaTitle" [text]="m.ctaText" [consultationFirst]="true" />

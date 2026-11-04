@@ -1,0 +1,42 @@
+@let d = ctx.d();
+@let c = d.contact;
+<app-breadcrumbs [trail]="trail()" />
+<section class="section contact">
+  <div class="container contact__grid">
+    <div class="contact__intro">
+      <p class="eyebrow">{{ d.nav.contact }}</p>
+      <h1 class="page-hero__title">{{ c.h1 }}</h1>
+      <p class="page-hero__lead">{{ c.intro }}</p>
+      <div class="contact__lines">
+        <h2 class="h4">{{ d.common.directLines }}</h2>
+        <app-contact-lines />
+        <h2 class="h4">{{ d.common.office }}</h2>
+        <p>{{ office() }}</p>
+        <p class="muted">{{ c.officeNote }}</p>
+      </div>
+    </div>
+    <div class="contact__form">
+      <div class="tabs tabs--contact">
+        <div role="tablist" class="tabs__list" #list (keydown)="onKey($event, list)">
+          @for (t of c.tabs; track t; let i = $index) {
+            <button type="button" role="tab" class="tabs__tab" [id]="'tab-' + i" [attr.aria-controls]="'panel-' + i"
+              [attr.aria-selected]="tab() === i" [tabindex]="tab() === i ? 0 : -1" (click)="tab.set(i)">{{ t }}</button>
+          }
+        </div>
+        <div role="tabpanel" id="panel-0" aria-labelledby="tab-0" class="tabs__panel" [hidden]="tab() !== 0">
+          <span id="proposal"></span>
+          <app-proposal-form idPrefix="cp" />
+        </div>
+        <div role="tabpanel" id="panel-1" aria-labelledby="tab-1" class="tabs__panel" [hidden]="tab() !== 1">
+          <span id="consultation"></span>
+          <p class="muted">{{ c.bookingText }}</p>
+          @if (bookingUrl(); as url) {
+            <a class="btn btn--primary" [href]="url" target="_blank" rel="noopener">{{ c.bookingButton }}</a>
+          } @else {
+            <app-simple-lead-form kind="consultation" idPrefix="cc" />
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

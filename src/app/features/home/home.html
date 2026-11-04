@@ -1,0 +1,157 @@
+@let d = ctx.d();
+@let h = d.home;
+
+<!-- 1. Hero: photograph + solid navy editorial panel. Text never sits on the photo. -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__panel">
+    <div class="hero__panel-inner">
+      <span class="diamond-rule" aria-hidden="true"></span>
+      <p class="hero__eyebrow">{{ h.eyebrow }}</p>
+      <h1 class="hero__title" id="hero-title">{{ h.h1 }}</h1>
+      <p class="hero__lead">{{ h.lead }}</p>
+      <div class="hero__actions">
+        <app-proposal-button [label]="d.common.getProposal" variant="light" />
+        <app-consultation-button [label]="d.common.bookConsultation" variant="outline-light" />
+      </div>
+    </div>
+  </div>
+  <div class="hero__media">
+    <app-photo name="leadership-meeting-hero" [alt]="h.heroImageAlt" [priority]="true" sizes="(min-width: 1000px) 60vw, 100vw" position="78% 40%" />
+  </div>
+</section>
+
+<!-- 2. Three editorial entry points -->
+<section class="section section--entries" [attr.aria-label]="d.nav.services">
+  <div class="container">
+    <ul class="entries">
+      @for (e of entries(); track e.path) {
+        <li class="entry">
+          <p class="eyebrow">{{ e.eyebrow }}</p>
+          <h2 class="entry__title"><a [routerLink]="ctx.L(e.path)" [fragment]="e.fragment">{{ e.title }}</a></h2>
+          <p class="entry__text">{{ e.text }}</p>
+          <span class="text-link entry__link" aria-hidden="true">{{ e.link }}<app-icon name="arrow" [size]="16" /></span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- 3. Nine services -->
+<section class="section section--ivory" aria-labelledby="services-title">
+  <div class="container split split--4-8">
+    <div class="split__intro">
+      <p class="eyebrow">{{ h.servicesEyebrow }}</p>
+      <h2 class="h2" id="services-title">{{ h.servicesTitle }}</h2>
+      <p class="muted">{{ h.servicesText }}</p>
+      <app-arrow-link [to]="ctx.L('/services')">{{ d.common.allServices }}</app-arrow-link>
+    </div>
+    <ul class="service-rows">
+      @for (s of services; track s) {
+        <li><a class="service-row" [routerLink]="ctx.L('/services/' + s)">
+          <span class="service-row__name">{{ d.services[s].name }}</span>
+          <span class="service-row__short">{{ d.services[s].short }}</span>
+          <app-icon name="arrow" />
+        </a></li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- 4. Proof facts + condensed four-stage process -->
+<section class="section section--navy" aria-labelledby="proof-title">
+  <div class="container">
+    <span class="diamond-rule" aria-hidden="true"></span>
+    <h2 class="h2" id="proof-title">{{ h.proofTitle }}</h2>
+    <dl class="facts">
+      @for (f of h.proofFacts; track f.text) {
+        <div class="facts__item"><dt>{{ f.value }}</dt><dd>{{ f.text }}</dd></div>
+      }
+    </dl>
+    <div class="process-band">
+      <h3 class="process-band__title">{{ h.processTitle }}</h3>
+      <ol class="process-band__steps">
+        @for (s of h.processSteps; track s.title; let i = $index) {
+          <li><span class="process-band__n">{{ i + 1 }}</span><p class="process-band__name">{{ s.title }}</p><p class="process-band__text">{{ s.text }}</p></li>
+        }
+      </ol>
+      <app-arrow-link [to]="ctx.L('/how-it-works')" extraClass="text-link--light">{{ h.processLink }}</app-arrow-link>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Markets: editorial split with team photograph (lazy, deferred below the fold) -->
+<section class="section" aria-labelledby="markets-title">
+  <div class="container split split--media">
+    <div class="split__media">
+      @defer (on viewport) {
+        <app-photo name="team-collaboration" [alt]="h.marketsImageAlt" sizes="(min-width: 1000px) 46vw, 100vw" position="45% 40%" />
+      } @placeholder {
+        <div class="h-full w-full bg-ivory-2"></div>
+      }
+    </div>
+    <div class="split__body">
+      <p class="eyebrow">{{ h.marketsEyebrow }}</p>
+      <h2 class="h2" id="markets-title">{{ h.marketsTitle }}</h2>
+      <p class="muted">{{ h.marketsText }}</p>
+      <div class="market-links">
+        <p class="market-links__group">{{ d.nav.gulfCompanies }}</p>
+        <ul class="link-rows">
+          @for (m of gulf; track m) {
+            <li><a [routerLink]="ctx.L('/markets/' + m)">{{ d.markets[m].linkLabel }}<app-icon name="arrow" [size]="16" /></a></li>
+          }
+        </ul>
+        <p class="market-links__group">{{ d.nav.internationalCompanies }}</p>
+        <ul class="link-rows">
+          <li><a [routerLink]="ctx.L('/markets/international')"><span>{{ d.markets.international.linkLabel }}<span class="link-rows__note">{{ d.nav.internationalNote }}</span></span><app-icon name="arrow" [size]="16" /></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Trust & compliance -->
+<section class="section section--ivory" aria-labelledby="trust-title">
+  <div class="container">
+    <div class="split split--media split--reverse">
+      <div class="split__media split__media--tall">
+        @defer (on viewport) {
+          <app-photo name="payroll-advisory" [alt]="h.trustImageAlt" sizes="(min-width: 1000px) 42vw, 100vw" position="55% 35%" />
+        } @placeholder {
+          <div class="h-full w-full bg-ivory-2"></div>
+        }
+      </div>
+      <div class="split__body">
+        <p class="eyebrow">{{ h.trustEyebrow }}</p>
+        <h2 class="h2" id="trust-title">{{ h.trustTitle }}</h2>
+        <p class="muted">{{ h.trustText }}</p>
+        <div class="facts-box">
+          <p class="facts-box__name">{{ ctx.lang() === 'ar' ? biz().name.ar : biz().name.en }}</p>
+          <p class="facts-box__text">{{ h.trustFactsText }}</p>
+          <div class="facts-box__actions">
+            <app-documents-button [label]="h.trustDocs" />
+            <app-arrow-link [to]="ctx.L('/trust')">{{ h.trustLink }}</app-arrow-link>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ol class="numbered-cols">
+      @for (t of trustItems(); track t.title; let i = $index) {
+        <li><span class="numbered-cols__n">{{ pad(i + 1) }}</span><h3 class="numbered-cols__title">{{ t.title }}</h3><p class="numbered-cols__text">{{ t.text }}</p></li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- 7. Final consultation / proposal band -->
+<section class="section final" aria-labelledby="final-title">
+  <div class="container final__inner">
+    <div>
+      <h2 class="final__title" id="final-title">{{ h.finalTitle }}</h2>
+      <p class="final__text">{{ h.finalText }}</p>
+    </div>
+    <div class="final__actions">
+      <app-proposal-button [label]="d.common.getProposal" />
+      <app-consultation-button [label]="d.common.bookConsultation" />
+    </div>
+  </div>
+</section>

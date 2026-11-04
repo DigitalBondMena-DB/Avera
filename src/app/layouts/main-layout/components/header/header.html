@@ -1,0 +1,175 @@
+@let d = ctx.d();
+@let n = d.nav;
+<a href="#main" class="skip-link">{{ d.common.skipToContent }}</a>
+<div class="utility">
+  <div class="container utility__inner">
+    <p class="utility__audience">{{ n.utilityAudience }}</p>
+    <ul class="utility__links">
+      <li class="hide-sm"><a [routerLink]="ctx.L('/trust')">{{ n.trust }}</a></li>
+      <li class="hide-sm"><a [routerLink]="ctx.L('/careers')">{{ n.careers }}</a></li>
+      <li><app-lang-switch [label]="d.otherLangName" [title]="d.common.switchLanguage" /></li>
+    </ul>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container site-header__inner" #nav (focusout)="onFocusOut($event)">
+    <a [routerLink]="ctx.L('/')" class="logo" [attr.aria-label]="d.siteName">
+      <img src="/brand/avera-logo-navy-on-white.png" width="511" height="210" [alt]="d.siteName" />
+    </a>
+    <nav class="nav" [attr.aria-label]="n.mainNav">
+      <ul class="nav__list">
+        <li>
+          <button type="button" id="menu-services-btn" class="nav__trigger" [class.is-section]="inSection('/services')"
+            [attr.aria-expanded]="menu() === 'services'" aria-controls="menu-services" (click)="toggle('services')">
+            {{ n.services }}<app-icon name="chevron" [size]="14" />
+          </button>
+          <div id="menu-services" class="mega" [hidden]="menu() !== 'services'">
+            <div class="container mega__inner mega__inner--4">
+              @for (g of groups; track g) {
+                <div class="mega__col">
+                  <p class="mega__title">{{ n.groups[g] }}</p>
+                  <ul>
+                    @for (s of services(); track s.slug) {
+                      @if (s.group === g) {
+                        <li><a [routerLink]="ctx.L('/services/' + s.slug)" [attr.aria-current]="current('/services/' + s.slug)">
+                          <span class="mega__name">{{ s.name }}</span><span class="mega__desc">{{ s.short }}</span></a></li>
+                      }
+                    }
+                  </ul>
+                </div>
+              }
+              <div class="mega__col mega__col--aside">
+                <a class="text-link" [routerLink]="ctx.L('/services')">{{ d.common.allServices }}<app-icon name="arrow" [size]="16" /></a>
+                <a class="text-link" [routerLink]="ctx.L('/how-it-works')">{{ n.howItWorks }}<app-icon name="arrow" [size]="16" /></a>
+                <app-proposal-button [label]="d.common.getProposal" />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <button type="button" id="menu-markets-btn" class="nav__trigger" [class.is-section]="inSection('/markets')"
+            [attr.aria-expanded]="menu() === 'markets'" aria-controls="menu-markets" (click)="toggle('markets')">
+            {{ n.markets }}<app-icon name="chevron" [size]="14" />
+          </button>
+          <div id="menu-markets" class="mega" [hidden]="menu() !== 'markets'">
+            <div class="container mega__inner mega__inner--3">
+              <div class="mega__col">
+                <p class="mega__title">{{ n.gulfCompanies }}</p>
+                <ul>
+                  @for (m of gulf; track m) {
+                    <li><a [routerLink]="ctx.L('/markets/' + m)" [attr.aria-current]="current('/markets/' + m)"><span class="mega__name">{{ d.markets[m].linkLabel }}</span></a></li>
+                  }
+                </ul>
+              </div>
+              <div class="mega__col">
+                <p class="mega__title">{{ n.internationalCompanies }}</p>
+                <ul><li><a [routerLink]="ctx.L('/markets/international')" [attr.aria-current]="current('/markets/international')">
+                  <span class="mega__name">{{ d.markets.international.linkLabel }}</span><span class="mega__desc">{{ n.internationalNote }}</span></a></li></ul>
+              </div>
+              <div class="mega__col mega__col--aside">
+                <a class="text-link" [routerLink]="ctx.L('/markets')">{{ n.markets }}<app-icon name="arrow" [size]="16" /></a>
+                <a class="text-link" [routerLink]="ctx.L('/markets/why-egypt')">{{ n.whyEgypt }}<app-icon name="arrow" [size]="16" /></a>
+                <a class="text-link" [routerLink]="ctx.L('/how-it-works')">{{ n.howItWorks }}<app-icon name="arrow" [size]="16" /></a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li><a [routerLink]="ctx.L('/industries')" [attr.aria-current]="current('/industries')">{{ n.industries }}</a></li>
+        <li><a [routerLink]="ctx.L('/pricing')" [attr.aria-current]="current('/pricing')">{{ n.pricing }}</a></li>
+        <li>
+          <button type="button" id="menu-about-btn" class="nav__trigger" [class.is-section]="inSection('/about', '/trust')"
+            [attr.aria-expanded]="menu() === 'about'" aria-controls="menu-about" (click)="toggle('about')">
+            {{ n.about }}<app-icon name="chevron" [size]="14" />
+          </button>
+          <div id="menu-about" class="mega mega--small" [hidden]="menu() !== 'about'">
+            <div class="container mega__inner">
+              <ul class="mega__inline">
+                @for (a of aboutLinks(); track a.path) {
+                  <li><a [routerLink]="ctx.L(a.path)" [attr.aria-current]="current(a.path)">{{ a.label }}</a></li>
+                }
+                <li><a [routerLink]="ctx.L('/careers')" [attr.aria-current]="current('/careers')">{{ n.careers }}</a></li>
+                <li><a [routerLink]="ctx.L('/faq')" [attr.aria-current]="current('/faq')">{{ n.faq }}</a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        @if (showInsights()) {
+          <li><a [routerLink]="ctx.L('/insights')" [attr.aria-current]="current('/insights')">{{ n.insights }}</a></li>
+        }
+      </ul>
+    </nav>
+    <div class="site-header__cta">
+      <app-proposal-button [label]="d.common.getProposal" extraClass="hide-md" />
+      <button type="button" class="icon-btn menu-btn" [attr.aria-expanded]="mobile()" aria-controls="mobile-menu" (click)="mobile.set(true)">
+        <app-icon name="menu" [size]="24" /><span class="menu-btn__label">{{ d.common.menu }}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+@if (mobile()) {
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" [attr.aria-label]="d.common.menu" appModal (appModalEscape)="mobile.set(false)">
+    <div class="mobile-menu__head container">
+      <a [routerLink]="ctx.L('/')" class="logo"><img src="/brand/avera-logo-navy-on-white.png" width="511" height="210" [alt]="d.siteName" /></a>
+      <button type="button" class="icon-btn" (click)="mobile.set(false)" [attr.aria-label]="d.common.closeMenu"><app-icon name="close" [size]="24" /></button>
+    </div>
+    <nav class="mobile-menu__body container" [attr.aria-label]="n.mainNav">
+      <ul class="m-list">
+        <li class="m-acc">
+          <button type="button" class="m-acc__btn" [attr.aria-expanded]="section() === 'services'" aria-controls="m-services" (click)="toggleSection('services')">
+            {{ n.services }}<app-icon [name]="section() === 'services' ? 'close' : 'plus'" />
+          </button>
+          <div id="m-services" class="m-acc__panel" [hidden]="section() !== 'services'">
+            @for (g of groups; track g) {
+              <div class="m-group">
+                <p class="m-group__title">{{ n.groups[g] }}</p>
+                <ul>
+                  @for (s of services(); track s.slug) {
+                    @if (s.group === g) { <li><a [routerLink]="ctx.L('/services/' + s.slug)">{{ s.name }}</a></li> }
+                  }
+                </ul>
+              </div>
+            }
+            <a class="text-link" [routerLink]="ctx.L('/services')">{{ d.common.allServices }}<app-icon name="arrow" [size]="16" /></a>
+          </div>
+        </li>
+        <li class="m-acc">
+          <button type="button" class="m-acc__btn" [attr.aria-expanded]="section() === 'markets'" aria-controls="m-markets" (click)="toggleSection('markets')">
+            {{ n.markets }}<app-icon [name]="section() === 'markets' ? 'close' : 'plus'" />
+          </button>
+          <div id="m-markets" class="m-acc__panel" [hidden]="section() !== 'markets'">
+            <ul>
+              @for (m of gulf; track m) { <li><a [routerLink]="ctx.L('/markets/' + m)">{{ d.markets[m].linkLabel }}</a></li> }
+              <li><a [routerLink]="ctx.L('/markets/international')">{{ d.markets.international.linkLabel }}</a></li>
+              <li><a [routerLink]="ctx.L('/markets/why-egypt')">{{ n.whyEgypt }}</a></li>
+            </ul>
+            <a class="text-link" [routerLink]="ctx.L('/markets')">{{ n.markets }}<app-icon name="arrow" [size]="16" /></a>
+          </div>
+        </li>
+        <li><a class="m-link" [routerLink]="ctx.L('/industries')">{{ n.industries }}</a></li>
+        <li><a class="m-link" [routerLink]="ctx.L('/pricing')">{{ n.pricing }}</a></li>
+        <li><a class="m-link" [routerLink]="ctx.L('/how-it-works')">{{ n.howItWorks }}</a></li>
+        <li class="m-acc">
+          <button type="button" class="m-acc__btn" [attr.aria-expanded]="section() === 'about'" aria-controls="m-about" (click)="toggleSection('about')">
+            {{ n.about }}<app-icon [name]="section() === 'about' ? 'close' : 'plus'" />
+          </button>
+          <div id="m-about" class="m-acc__panel" [hidden]="section() !== 'about'">
+            <ul>
+              @for (a of aboutLinks(); track a.path) { <li><a [routerLink]="ctx.L(a.path)">{{ a.label }}</a></li> }
+              <li><a [routerLink]="ctx.L('/careers')">{{ n.careers }}</a></li>
+            </ul>
+          </div>
+        </li>
+        @if (showInsights()) { <li><a class="m-link" [routerLink]="ctx.L('/insights')">{{ n.insights }}</a></li> }
+        <li><a class="m-link" [routerLink]="ctx.L('/faq')">{{ n.faq }}</a></li>
+        <li><a class="m-link" [routerLink]="ctx.L('/contact')">{{ n.contact }}</a></li>
+      </ul>
+      <div class="mobile-menu__actions" (click)="closeMobileFromCta($event)">
+        <app-proposal-button [label]="d.common.getProposal" />
+        <app-consultation-button [label]="d.common.bookConsultation" />
+        <app-lang-switch [label]="d.otherLangName" [title]="d.common.switchLanguage" extraClass="mobile-menu__lang" />
+      </div>
+    </nav>
+  </div>
+}
